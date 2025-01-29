@@ -1,9 +1,9 @@
-const http = require('http');
+const https = require('https');
 const en = require('./lang/en/en');
 const utils = require('./modules/utils');
 const fs = require('fs');
 
-const server = http.createServer(function (req, res) {
+const server = https.createServer(function (req, res) {
 
   const basePath = "3000/COMP4537/labs/3/";
 
@@ -54,6 +54,11 @@ function apiReadFile(req, res, fileName) {
     res.writeHead(404, { "content-type": "text/html", "access-control-allow-credentials": "*" });
     res.end(`File: '${fileName}' doesn't exist or cannot be accessed.`);
   }
+}
+
+function sendResponse(res, message, statusCode=200) {
+  res.writeHead(statusCode, { "content-type": "text/html", "access-control-allow-credentials": "*" });
+  res.end(message);
 }
 
 const PORT = process.env.PORT || 3000;
