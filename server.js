@@ -22,7 +22,7 @@ class Server {
       } else if (url.pathname.startsWith(basePath + "readFile/")) {
         this.apiReadFile(res, url.pathname.split("/").pop());
       } else {
-        res.end("Invalid path.");
+        res.end(en.en["InvalidPathMessage"]);
       }
     });
   }
@@ -54,7 +54,7 @@ class Server {
       res.end(text);
     } catch (err) {
       res.writeHead(404, { "content-type": "text/html", "access-control-allow-credentials": "*" });
-      res.end(`File: '${fileName}' doesn't exist or cannot be accessed.`);
+      res.end(utils.formatString(en.en["FileErrorMessage"], { "FILENAME": fileName }));
     }
   }
   
