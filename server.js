@@ -13,31 +13,29 @@ const server = https.createServer(options, function (req, res) {
   const basePath = "/COMP4537/labs/3/";
 
   const url = new URL(req.url, "https://put-domain-here");
+  const params = url.searchParams;
 
   if (url.pathname === basePath + "getDate/") {
-    apiGetDate(req, res);
+    apiGetDate(res, params);
   } else if (url.pathname === basePath + "writeFile/") {
-    apiWriteFile(req, res);
+    apiWriteFile(res, params);
   } else if (url.pathname.startsWith(basePath + "readFile/")) {
-    apiReadFile(req, res, url.pathname.split("/").pop());
+    apiReadFile(res, url.pathname.split("/").pop());
   } else {
     res.end("Invalid path.");
   }
 });
 
-function apiGetDate(req, res) {
-  const url = new URL(req.headers.host + req.url);
-  const name = url.searchParams.get("name");
+function apiGetDate(res, params) {
+  const name = params.get("name");
 
   res.writeHead(200, { "content-type": "text/html", "access-control-allow-credentials": "*" });
   res.end(utils.formatString(en.en["DateTimeResponseMessage"], { "NAME": name, "DATESTRING": utils.getDate() }));
 }
 
-function apiWriteFile(req, res) {
+function apiWriteFile(res, params) {
 
-  const url = new URL(req.headers.host + req.url);
-
-  const text = url.searchParams.get("text");
+  const text = params.get("text");
 
   res.writeHead(200, { "content-type": "text/html", "access-control-allow-credentials": "*" });
   try {
@@ -48,7 +46,7 @@ function apiWriteFile(req, res) {
   }
 }
 
-function apiReadFile(req, res, fileName) {
+function apiReadFile(res, fileName) {
   try {
     const text = fs.readFileSync(fileName).toString();
     res.writeHead(200, { "content-type": "text", "access-control-allow-credentials": "*" });
