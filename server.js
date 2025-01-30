@@ -12,8 +12,7 @@ const server = https.createServer(options, function (req, res) {
 
   const basePath = "/COMP4537/labs/3/";
 
-  const url = new URL(req.url, "https://localhost");
-  console.log(url);
+  const url = new URL(req.url, "https://146.190.127.211:3000");
 
   if (url.pathname === basePath + "getDate/") {
     apiGetDate(req, res);
@@ -29,8 +28,6 @@ const server = https.createServer(options, function (req, res) {
 function apiGetDate(req, res) {
   const url = new URL(req.headers.host + req.url);
   const name = url.searchParams.get("name");
-
-  console.log(name);
 
   res.writeHead(200, { "content-type": "text/html", "access-control-allow-credentials": "*" });
   res.end(utils.formatString(en.en["DateTimeResponseMessage"], { "NAME": name, "DATESTRING": utils.getDate() }));
