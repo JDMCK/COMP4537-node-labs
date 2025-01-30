@@ -8,7 +8,7 @@ class Server {
 
     this.PORT = process.env.PORT || 3000;
 
-    this.server = https.createServer((req, res) => {
+    this.server = https.createServer(this.options, (req, res) => {
   
       const basePath = "/COMP4537/labs/3/";
     
