@@ -1,4 +1,4 @@
-const https = require('https');
+const http = require('http');
 const en = require('./lang/en/en');
 const utils = require('./modules/utils');
 const fs = require('fs');
@@ -6,18 +6,13 @@ class Server {
 
   constructor() {
 
-    this.options = {
-      key: fs.readFileSync("server.key"),
-      cert: fs.readFileSync("server.crt"),
-    };
-
     this.PORT = process.env.PORT || 3000;
 
-    this.server = https.createServer(this.options, (req, res) => {
+    this.server = http.createServer((req, res) => {
   
       const basePath = "/COMP4537/labs/3/";
     
-      const url = new URL(req.url, "https://put-domain-here");
+      const url = new URL(req.url, "http://put-domain-here");
       const params = url.searchParams;
     
       if (url.pathname === basePath + "getDate/") {
