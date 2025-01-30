@@ -6,14 +6,9 @@ class Server {
 
   constructor() {
 
-    this.options = {
-      key: fs.readFileSync("server.key"),
-      cert: fs.readFileSync("server.crt"),
-    };
-
     this.PORT = process.env.PORT || 3000;
 
-    this.server = https.createServer(this.options, (req, res) => {
+    this.server = https.createServer((req, res) => {
   
       const basePath = "/COMP4537/labs/3/";
     
