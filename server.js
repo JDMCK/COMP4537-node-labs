@@ -12,7 +12,9 @@ const server = https.createServer(options, function (req, res) {
 
   const basePath = "/COMP4537/labs/3/";
 
-  const url = new URL(req.url, "https://146.190.127.211:3000");
+  const url = new URL(req.url, `https://${req.headers.host}:3000`);
+
+  console.log("Host: ", req.headers.host);
 
   if (url.pathname === basePath + "getDate/") {
     apiGetDate(req, res);
