@@ -3,12 +3,18 @@ const en = require('./lang/en/en');
 const utils = require('./modules/utils');
 const fs = require('fs');
 
-const server = https.createServer(function (req, res) {
+const options = {
+  key: fs.readFileSync("server.key"),
+  cert: fs.readFileSync("server.crt"),
+};
 
-  const basePath = "3000/COMP4537/labs/3/";
+const server = https.createServer(options, function (req, res) {
 
-  const url = new URL(req.headers.host + req.url);
-  console.log(url.pathname);
+  const basePath = "/COMP4537/labs/3/";
+
+  const url = new URL(req.url, "https://localhost");
+  console.log(url);
+
   if (url.pathname === basePath + "getDate/") {
     apiGetDate(req, res);
   } else if (url.pathname === basePath + "writeFile/") {
@@ -54,11 +60,6 @@ function apiReadFile(req, res, fileName) {
     res.writeHead(404, { "content-type": "text/html", "access-control-allow-credentials": "*" });
     res.end(`File: '${fileName}' doesn't exist or cannot be accessed.`);
   }
-}
-
-function sendResponse(res, message, statusCode=200) {
-  res.writeHead(statusCode, { "content-type": "text/html", "access-control-allow-credentials": "*" });
-  res.end(message);
 }
 
 const PORT = process.env.PORT || 3000;
