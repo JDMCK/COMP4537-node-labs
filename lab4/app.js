@@ -92,8 +92,10 @@ class Server {
       res.writeHead(422, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
       res.end(JSON.stringify({
         serverRequestCount: this.requestCount,
-        message: en.en["BadInputErrorMessage"],
-        received: word }));
+        word: undefined,
+        definition: undefined,
+        error: en.en["BadInputErrorMessage"],
+      }));
       return;
     }
 
@@ -104,6 +106,7 @@ class Server {
     if (definition === undefined) {
       res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
       res.end(JSON.stringify({
+        serverRequestCount: this.requestCount,
         word: word,
         defintion: undefined,
         error: utils.formatString(en.en["NoDefinitionMessasge"], { "WORD": word }),
@@ -113,6 +116,7 @@ class Server {
 
     res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
     res.end(JSON.stringify({
+      serverRequestCount: this.requestCount,
       word: word,
       defintion: definition,
       error: "",
