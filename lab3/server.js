@@ -30,7 +30,7 @@ class Server {
   apiGetDate(res, params) {
     const name = params.get("name");
   
-    res.writeHead(200, { "content-type": "text/html", "access-control-allow-credentials": "*" });
+    res.writeHead(200, { "content-type": "text/html", "Access-Control-Allow-Origin": "*" });
     res.end(utils.formatString(en.en["DateTimeResponseMessage"], { "NAME": name, "DATESTRING": utils.getDate() }));
   }
   
@@ -38,7 +38,7 @@ class Server {
   
     const text = params.get("text");
   
-    res.writeHead(200, { "content-type": "text/html", "access-control-allow-credentials": "*" });
+    res.writeHead(200, { "content-type": "text/html", "Access-Control-Allow-Origin": "*" });
     try {
       fs.appendFileSync("file.txt", text);
       res.end("Successfully wrote to file.txt");
@@ -50,10 +50,10 @@ class Server {
   apiReadFile(res, fileName) {
     try {
       const text = fs.readFileSync(fileName).toString();
-      res.writeHead(200, { "content-type": "text", "access-control-allow-credentials": "*" });
+      res.writeHead(200, { "content-type": "text", "Access-Control-Allow-Origin": "*" });
       res.end(text);
     } catch (err) {
-      res.writeHead(404, { "content-type": "text/html", "access-control-allow-credentials": "*" });
+      res.writeHead(404, { "content-type": "text/html", "Access-Control-Allow-Origin": "*" });
       res.end(utils.formatString(en.en["FileErrorMessage"], { "FILENAME": fileName }));
     }
   }
