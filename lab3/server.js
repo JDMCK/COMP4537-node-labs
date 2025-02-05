@@ -6,7 +6,7 @@ class Server {
 
   constructor() {
 
-    this.PORT = process.env.PORT || 3000;
+    this.PORT = 3000;
 
     this.server = http.createServer((req, res) => {
   
