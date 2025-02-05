@@ -50,6 +50,16 @@ class Server {
         const jsonDictionary = JSON.parse(dictionary);
         const word = parsedData["word"];
         const definition = parsedData["definition"];
+
+        if (!word || !definition) {
+          res.writeHead(422, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
+          res.end(JSON.stringify({
+            serverRequestCount: this.requestCount,
+            message: en.en["BadInputErrorMessage"],
+            received: parsedData }));
+          return;
+        }
+
         jsonDictionary[word] = definition;
   
         fs.writeFileSync(this.dbPath, JSON.stringify(jsonDictionary));
@@ -57,9 +67,10 @@ class Server {
         res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
         res.end(JSON.stringify({
           serverRequestCount: this.requestCount,
-          message: en.en["StoreSuccessMessage"],
+          message: utils.formatString(en.en["StoreSuccessMessage"], { "WORD": word }),
           received: parsedData }));
       } catch (e) {
+        console.error(e);
         res.writeHead(500, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
         res.end(JSON.stringify({
           serverRequestCount: this.requestCount,
@@ -74,7 +85,16 @@ class Server {
     const word = params.get("word");
 
     if (fs.existsSync(this.dbPath) === false) {
-      fs.writeFileSync(this.dbPath);
+      fs.writeFileSync(this.dbPath, "{}");
+    }
+
+    if (!word) {
+      res.writeHead(422, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
+      res.end(JSON.stringify({
+        serverRequestCount: this.requestCount,
+        message: en.en["BadInputErrorMessage"],
+        received: word }));
+      return;
     }
 
     const definitions = fs.readFileSync(this.dbPath);
@@ -82,12 +102,13 @@ class Server {
     const definition = jsonDefinitions[word];
 
     if (definition === undefined) {
-      res.writeHead(204, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
+      res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
       res.end(JSON.stringify({
         word: word,
         defintion: undefined,
-        error: en.en["204Message"],
+        error: utils.formatString(en.en["NoDefinitionMessasge"], { "WORD": word }),
       }));
+      return;
     }
 
     res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
