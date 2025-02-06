@@ -22,7 +22,16 @@ class Server {
         return;
       }
 
-      if (req.method === "POST") {
+      if (req.method === "OPTIONS") {
+        // Set necessary CORS headers
+        res.writeHead(204, {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Max-Age": 86400 // Cache preflight response
+        });
+        res.end(); // End response for OPTIONS request
+      } else if (req.method === "POST") {
         this.apiStore(req, res);
       } else if (req.method === "GET") {
         this.apiSearch(url.searchParams, res);
