@@ -10,6 +10,7 @@ class Server {
     this.PORT = 3002;
     
     // Initialize db connection
+    this.tableName = 'patients';
     this.dbConnect();
 
     // Initialize server
@@ -46,9 +47,43 @@ class Server {
     });
   }
 
+  async checkCreateTable(connection) {
+    try {
+      const [rows] = await connection.query(
+      "SELECT COUNT(*) AS count FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = ?",
+      [this.tableName]
+      );
+
+      if (rows[0].count >= 1) {
+        return;
+      }
+      
+      console.log(`Creating new ${this.tableName} table...`);
+      await connection.query(
+        `CREATE TABLE patients (
+          patientid INT AUTO_INCREMENT,
+          name VARCHAR(100),
+          dateOfBirth DATETIME,
+          PRIMARY KEY(patientid)
+        )`
+      );
+      console.log(`Successfully created ${this.tableName} table.`);
+    } catch (error) {
+      console.error(`Failed to create ${this.tableName} table.`, error);
+    }
+  }
+
   async dbConnect() {
     try {
-      this.connection = await mysql.createConnection({
+      this.adminConnection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'lab5db',
+        database: 'lab5',
+        port: 3306
+      });
+
+      this.user_connection = await mysql.createConnection({
         host: 'localhost',
         user: 'lab5server',
         password: 'lab5db',
@@ -57,9 +92,11 @@ class Server {
       });
       console.log("Successfully connected to database.");
     } catch (error) {
-      console.log(error);
-      console.error("Failed to connect to database.");
+      console.error("Failed to connect to database.", error);
     }
+
+    await this.checkCreateTable(this.adminConnection);
+    this.adminConnection.end();
   }
 
   async dbSearch(res, query) {
