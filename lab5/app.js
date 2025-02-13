@@ -83,7 +83,7 @@ class Server {
         port: 3306
       });
 
-      this.user_connection = await mysql.createConnection({
+      this.userConnection = await mysql.createConnection({
         host: 'localhost',
         user: 'lab5server',
         password: 'lab5db',
@@ -101,7 +101,7 @@ class Server {
 
   async dbSearch(res, query) {
     try {
-      const [rows] = await this.connection.query(query);
+      const [rows] = await this.userConnection.query(query);
 
       res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
       res.end(JSON.stringify({
@@ -134,7 +134,7 @@ class Server {
     req.on('end', async () => {
       const parsedData = JSON.parse(body);
       try {
-        const [result] = await this.connection.query(parsedData.query);
+        const [result] = await this.userConnection.query(parsedData.query);
   
         res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
         res.end(JSON.stringify({
