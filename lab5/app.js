@@ -57,6 +57,7 @@ class Server {
       });
       console.log("Successfully connected to database.");
     } catch (error) {
+      console.log(error);
       console.error("Failed to connect to database.");
     }
   }
@@ -71,7 +72,7 @@ class Server {
         message: lang.formatString(en.en["QuerySuccess"], { "TYPE": this.queryType }),
         received: query }));
     } catch (error) {
-      
+      console.error(error);
       if (error.errno === 1142) {// 'ER_TABLEACCESS_DENIED_ERROR'
         res.writeHead(403, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
         res.end(JSON.stringify({
@@ -79,7 +80,6 @@ class Server {
           received: query }));
         return;
       }
-
       res.writeHead(500, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
       res.end(JSON.stringify({
         message: en.en["InternalServerError"],
@@ -104,7 +104,7 @@ class Server {
           message: lang.formatString(en.en["QuerySuccess"], { "TYPE": this.queryType }),
           received: parsedData }));
       } catch (error) {
-        
+        console.error(error);
         if (error.errno === 1142) {// 'ER_TABLEACCESS_DENIED_ERROR'
           res.writeHead(403, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
           res.end(JSON.stringify({
@@ -112,7 +112,6 @@ class Server {
             received: parsedData }));
           return;
         }
-
         res.writeHead(500, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
         res.end(JSON.stringify({
           message: en.en["InternalServerError"],
