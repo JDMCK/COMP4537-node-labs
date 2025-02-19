@@ -96,11 +96,11 @@ class Server {
     }
 
     await this.checkCreateTable(this.adminConnection);
-    this.adminConnection.end();
   }
 
   async dbSearch(res, query) {
     try {
+      await this.checkCreateTable(this.adminConnection);
       const [rows] = await this.userConnection.query(query);
 
       res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
@@ -125,6 +125,7 @@ class Server {
   }
 
   dbInsert(req, res) {
+
     let body = '';
 
     req.on('data', chunk => {
@@ -134,6 +135,7 @@ class Server {
     req.on('end', async () => {
       const parsedData = JSON.parse(body);
       try {
+        await this.checkCreateTable(this.adminConnection);
         const [result] = await this.userConnection.query(parsedData.query);
   
         res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
